@@ -1,0 +1,64 @@
+0.76947
+0.884604
+0.591666
+0 0.643747
+delta for last layer 0 th neuron = -0.147635
+delta for layer 0 and 0 th neuron = -0.00704887
+delta for layer 0 and 1 th neuron = -0.00352577
+layer 1neuron 0input 0 weight 0.220673
+layer 1neuron 0input 1 weight 0.115466
+layer 1neuron 0input 2 weight 0.359133
+layer 0 neuron 0input 0 weight 0.0212687
+layer 0 neuron 0input 1 weight 0.576137
+layer 0 neuron 0input 2 weight 0.76947
+layer 0 neuron 1input 0 weight 0.116691
+layer 0 neuron 1input 1 weight 0.285664
+layer 0 neuron 1input 2 weight 0.884604
+0.797787
+1.00482
+0.741865
+1 0.677403
+delta for last layer 0 th neuron = 0.0704964
+delta for layer 0 and 0 th neuron = 0.00485327
+delta for layer 0 and 1 th neuron = 0.00304191
+layer 1neuron 0input 0 weight 0.321568
+layer 1neuron 0input 1 weight 0.219958
+layer 1neuron 0input 2 weight 0.359133
+layer 0 neuron 0input 0 weight 0.0212687
+layer 0 neuron 0input 1 weight 0.576137
+layer 0 neuron 0input 2 weight 0.776519
+layer 0 neuron 1input 0 weight 0.116691
+layer 0 neuron 1input 1 weight 0.285664
+layer 0 neuron 1input 2 weight 0.888129
+1.3478
+1.17075
+0.704302
+1 0.669141
+delta for last layer 0 th neuron = 0.0732493
+delta for layer 0 and 0 th neuron = 0.00327303
+delta for layer 0 and 1 th neuron = 0.00222815
+layer 1neuron 0input 0 weight 0.27296
+layer 1neuron 0input 1 weight 0.168354
+layer 1neuron 0input 2 weight 0.359133
+layer 0 neuron 0input 0 weight 0.0164154
+layer 0 neuron 0input 1 weight 0.576137
+layer 0 neuron 0input 2 weight 0.771665
+layer 0 neuron 1input 0 weight 0.113649
+layer 0 neuron 1input 1 weight 0.285664
+layer 0 neuron 1input 2 weight 0.885087
+1.35767
+1.27994
+0.617976
+0 0.649758
+delta for last layer 0 th neuron = -0.147867
+delta for layer 0 and 0 th neuron = -0.00516965
+delta for layer 0 and 1 th neuron = -0.00283034
+layer 1neuron 0input 0 weight 0.214817
+layer 1neuron 0input 1 weight 0.112444
+layer 1neuron 0input 2 weight 0.359133
+layer 0 neuron 0input 0 weight 0.0164154
+layer 0 neuron 0input 1 weight 0.572864
+layer 0 neuron 0input 2 weight 0.768392
+layer 0 neuron 1input 0 weight 0.113649
+layer 0 neuron 1input 1 weight 0.283436
+layer 0 neuron 1input 2 weight 0.882859

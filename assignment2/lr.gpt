@@ -1,0 +1,9 @@
+set autoscale
+set title "Number of iterations vs momentum for learning rate = 0.5"
+set xlabel " momentum"
+set ylabel " Number of iterations"
+set term png
+set output "plots/lr-0.5.png"
+
+
+plot 'results/output-lr50' using 2:3 smooth unique with linespoints

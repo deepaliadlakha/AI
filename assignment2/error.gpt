@@ -1,0 +1,9 @@
+set autoscale
+set title "Total Error vs Number of iterations for momentum =0.5 & learning rate = 0.5"
+set xlabel " Number of iterations"
+set ylabel " Total error"
+set term png
+set output "plots/error.png"
+
+
+plot 'results/error' using 1:2 smooth unique with linespoints
