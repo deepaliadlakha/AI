@@ -113,7 +113,7 @@ class network
 			output_try += p*(int)(oj+0.5);
 			p*=2;
 		}
-			if(debug)cout<<output_try<<endl;
+		if(debug)cout<<output_try<<endl;
 		//cout<<"current error "<<error/2<<endl;
 		for(int i=noLayers-2;i>=0;i--)
 		{

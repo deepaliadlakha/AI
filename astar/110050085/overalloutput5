@@ -1,0 +1,73 @@
+Inserting: ID: 10, type=11, time=121
+value: 15
+ID: 10, type=11, time=121
+values: 18 10 23
+Inserting: ID: 11, type=12, time=144
+value: 16
+Inserting: ID: 12, type=13, time=169
+value: 17
+Inserting: ID: 13, type=14, time=196
+value: 18
+Inserting: ID: 14, type=15, time=225
+value: 19
+ID: 14, type=15, time=225
+values: 22 14 27
+Inserting: ID: 15, type=16, time=256
+value: 20
+Inserting: ID: 16, type=17, time=289
+value: 21
+Inserting: ID: 17, type=18, time=324
+value: 22
+Inserting: ID: 18, type=19, time=361
+value: 23
+ID: 18, type=19, time=361
+values: 26 18 31
+Inserting: ID: 19, type=20, time=400
+value: 24
+Inserting: ID: 20, type=21, time=441
+value: 25
+Inserting: ID: 21, type=22, time=484
+value: 26
+Inserting: ID: 22, type=23, time=529
+value: 27
+ID: 22, type=23, time=529
+values: 30 22 35
+Inserting: ID: 23, type=24, time=576
+value: 28
+Inserting: ID: 24, type=25, time=625
+value: 29
+Inserting: ID: 25, type=26, time=676
+value: 30
+Inserting: ID: 26, type=27, time=729
+value: 31
+ID: 26, type=27, time=729
+values: 34 26 39
+Inserting: ID: 27, type=28, time=784
+value: 32
+Inserting: ID: 28, type=29, time=841
+value: 33
+Inserting: ID: 29, type=30, time=900
+value: 34
+Size of map: 0
+deleting ID: 10, type=11, time=121
+deleting ID: 18, type=19, time=361
+deleting ID: 26, type=27, time=729
+Inserting: ID: 10, type=11, time=121
+ID: 10, type=11, time=121
+value: 21
+Inserting: ID: 15, type=16, time=256
+ID: 15, type=16, time=256
+value: 26
+Inserting: ID: 20, type=21, time=441
+ID: 20, type=21, time=441
+value: 31
+Inserting: ID: 25, type=26, time=676
+ID: 25, type=26, time=676
+value: 36
+0 0
+0 0
+0 0
+0 4490176 520284 2 4387936 
+0 4490176 520284 2 520388 
+0
+0 4490176 520284 2 4385504 

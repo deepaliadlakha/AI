@@ -3,9 +3,137 @@
 #include<cstdlib>
 #include<cmath>
 #include<ctime>
+#include<map>
+#include<unordered_map>
+#include<string>
+#include<cstring>
+#include<set>
+#include<fstream>
 using namespace std;
 int debug =0;
-int output_try  = 0;
+
+unordered_map<string,int> dictionary;
+set<string> stop_dictionary;
+int word_count = 0;
+
+void train_using_file(FILE* fp,vector<vector<float> >&table,vector<vector<int> >&out_final,vector<int>& answers)
+{
+	char s[140];
+	char cur_word[140];
+	char *in;
+	
+	while(1)
+	{
+
+		in=fgets(s, 140, fp);
+		if (in == NULL){
+			//printf("EOF found\n");
+			break;
+		}
+		int n = strlen(s);
+		//cout<<s<<endl;
+		vector<float> temp;
+		temp.resize(word_count,0);
+		for(int i=0;i<n;i++)
+		{
+			//cout<<i<<endl;
+			while(i<n && s[i] == ' ' && s[i] == '\t')i++;
+			int j=0;
+			while(i<n && s[i] != ' ' && s[i] != '\t')
+			{
+				if(s[i] == '.' || s[i] == '"'  || s[i] == ',' || s[i] == '!') 
+				{
+					i++;
+				}
+				else
+					cur_word[j++] = s[i++];								
+			}
+			
+			cur_word[j] = '\0';
+			
+			if (dictionary.count(string(cur_word)) >0)
+				temp[dictionary.find(string(cur_word))->second]++;
+		}
+		table.push_back(temp);
+		in=fgets(s, 140, fp);
+		int ans;
+		ans = atoi(s);
+		vector<int> cur_out;
+		cur_out.resize(3,0);
+		cur_out[ans] = 1;
+		answers.push_back(ans);
+		out_final.push_back(cur_out);
+	}
+}
+void build_stop_words()
+{
+	ifstream fp("stop_words");
+	string s;
+	char cur_word[140];
+	
+	while(fp.good())
+	{
+
+		fp>>s;
+		
+		if (stop_dictionary.count(s) <=0)
+		{
+			//cout<<s<<endl;
+			stop_dictionary.insert(s);
+		}
+		
+	}
+	fp.close();
+	return ;
+}
+void build_dictionary(FILE * fp)
+{	
+//	fp = fopen("dictionary_data", "r");
+	char s[140];
+	char cur_word[140];
+	char *in;
+	
+	while(1)
+	{
+
+		in=fgets(s, 140, fp);
+		if (in == NULL){
+			//printf("EOF found\n");
+			break;
+		}
+		int n = strlen(s);
+		for(int i=0;i<n;i++)
+		{
+			//cout<<i<<endl;
+			while(i<n && s[i] == ' ' && s[i] == '\t')i++;
+			int j=0;
+			while(i<n && s[i] != ' ' && s[i] != '\t')
+			{
+				if(s[i] == '.' || s[i] == '"'  || s[i] == ',' || s[i] == '!') 
+				{
+					i++;
+				}
+				else
+					cur_word[j++] = s[i++];								
+			}
+			
+			cur_word[j] = '\0';
+			//printf("%s\n",cur_word);
+			if (dictionary.count(string(cur_word)) <=0 && stop_dictionary.count(string(cur_word)) <=0)
+			{
+				//printf("%s\n",cur_word);
+				dictionary.insert(pair<string,int>(string(cur_word),word_count));
+				word_count++;
+				//cout<<"here";
+			}
+		}
+	}
+	//fclose(fp);
+	cout<<word_count<<endl;	
+	return ;
+}
+
+
 class neuron
 {
 	public:
@@ -82,17 +210,18 @@ class network
 			{
 				mat[i].v[j].output = mat[i].v[j].dotp(input);
 				mat[i].output[j] = mat[i].v[j].output;
-				if(debug)
-					cout<<"layer "<<i<<" neuron "<<j<<" "<<mat[i].v[j].output<<endl;
+				//if(debug)
+					//cout<<"layer "<<i<<" neuron "<<j<<" "<<mat[i].v[j].output<<endl;
 				//cout<<"output of layer "<<i<<"  neuron "<<j<<"  is  "<<mat[i].output[j]<<endl;
 			}	
 	}
 	
 	void train(vector<float> &input,vector<int>&target)
 	{
-		if(debug)
+		/*if(debug)
 		for(int j=0;j<input.size();j++)
 					cout<<input[j]<<" ";
+		*/
 		propogate(0,input);
 		for(int i=1;i<noLayers;i++)
 		{
@@ -100,8 +229,8 @@ class network
 			
 		}
 		error = 0;
-
-		int p = 1;
+		int output  = 0;
+		//int p = 1;
 		for(int i=0;i<mat[noLayers-1].noNeuron;i++)
 		{
 			float oj = mat[noLayers-1].v[i].output;
@@ -110,10 +239,12 @@ class network
 			
 			mat[noLayers-1].v[i].delta= ((float)target[i] - oj)*oj*(1-oj);
 			error+=((float)target[i]-oj)*((float)target[i]-oj);
-			output_try += p*(int)(oj+0.5);
-			p*=2;
+			//output += p*(int)(oj+0.5);
+			//p*=2;
+			if((int)(oj+0.5)==1)
+				output = i;				
 		}
-			if(debug)cout<<output_try<<endl;
+		if(debug)cout<<"current output is "<<output<<endl;
 		//cout<<"current error "<<error/2<<endl;
 		for(int i=noLayers-2;i>=0;i--)
 		{
@@ -208,17 +339,99 @@ int evaluate_input(vector<int>& input,vector<cond>& roots)
 			return i;
 	return roots.size();
 }
+void test_using_file(FILE* fp, network& net)
+{
+	vector<int> test_expected_out;
+	vector<int> test_out;
+	int wrong_count = 0;
+	char s[140];
+	char cur_word[140];
+	char *in;
+	while(1)
+	{
+
+		in=fgets(s, 140, fp);
+		if (in == NULL){
+			//printf("EOF found\n");
+			break;
+		}
+		int n = strlen(s);	
+		//printf("%s\n",s);
+		vector<float> temp;
+		temp.resize(word_count,0);	
+		for(int i=0;i<n;i++)
+		{
+			//cout<<i<<endl;
+			while(i<n && s[i] == ' ' && s[i] == '\t')i++;
+			int j=0;
+			while(i<n && s[i] != ' ' && s[i] != '\t')
+			{
+				if(s[i] == '.' || s[i] == '"'  || s[i] == ',' || s[i] == '!') 
+				{
+					i++;
+				}
+				else
+					cur_word[j++] = s[i++];								
+			}
+			
+			cur_word[j] = '\0';
+			//printf("%s\n",cur_word);
+			if (dictionary.count(string(cur_word)) >0)
+			{
+				//printf("%s\n",cur_word);
+				temp[dictionary.find(string(cur_word))->second]++;
+				//cout<<"here";
+			}
+		}
+		//table.push_back(temp);
+		
+		net.propogate(0,temp);
+		for(int i=1;i<net.noLayers;i++)
+		{
+			net.propogate(i,net.mat[i-1].output);			
+		}
+		int output  = 0;
+		float max_out = 0;
+		//int p = 1;
+		for(int i=0;i<net.mat[net.noLayers-1].noNeuron;i++)
+		{
+			float oj = net.mat[net.noLayers-1].v[i].output;
+			if(oj > max_out)
+			{
+				output = i;				
+				max_out = oj;
+			}
+			
+		}
+		//cout<<"outputs  are "<<net.mat[net.noLayers-1].v[0].output<<" "<<net.mat[net.noLayers-1].v[1].output<<" "<<net.mat[net.noLayers-1].v[2].output<<endl;
+		in=fgets(s, 140, fp);
+		int ans;
+		ans = atoi(s);
+		test_expected_out.push_back(ans);
+		test_out.push_back(output);
+		wrong_count += (ans!=output);
+		cout<<ans<<" "<<output<<endl;
+		//answers.push_back(ans);
+		//out_final.push_back(cur_out);
+	}	
+cout<<wrong_count<<endl;
+}
+
 int main(int argc, char* argv[])
 {
 	srand (time(NULL));
 	network net;
+	build_stop_words();
+
 	int n;
 	//cout<<"enter num layers"<<endl;
 	cin>>n;
+	//n= word_count;
 
 	int inputs;
 	//cout<<"number of inputs"<<endl;
-	cin>>inputs;
+	//cin>>inputs;
+	inputs = word_count;
 	net.noLayers = n;	
 	net.eta = atoi(argv[1])/100.0;
 	net.momentum = atoi(argv[2])/100.0;
@@ -232,73 +445,58 @@ int main(int argc, char* argv[])
 		inputs = temp;
 	}
 	
-	vector<cond> root;
-	int args;
-	//cout << "Input the number of args: \n";
-	cin >> args;
-	int no_functions;
-	//cout<<"enter number of functions \n";
-	cin>>no_functions;
-	
-	root.resize(no_functions);
-	for(int i=0;i<no_functions;i++)
-	{
-		//cout << "Input the function: ";
-		cin >> root[i];
-	}
 	float threshold;
 	cin>>threshold;
-	vector< vector <float> > table;	
-	vector<vector<int> > out_final;
+	
+	vector<vector<float> >table;
+	vector<vector<int> >out_final;
 	vector<int> answers;
-	for (int i=0; i<(1<<args); i++) {
-		vector<int> val(args);
-		vector<float> values(args);
-		for (int j=0; j<args; j++)
-		{
-			val[j] = (i>>j)&1;
-			values[j] = val[j];
-		}
-		
-		values.push_back(1);
-		table.push_back(values);
-		vector<int> temp(4);
-		int ans = evaluate_input(val,root);	
-		answers.push_back(ans);
-		//cout<<ans<<endl;			
-		for (int j=0; j<4; j++)
-		{
-			temp[j] = (ans>>j)&1;
-			
-		}
-		out_final.push_back(temp);
-	//	temp.clear();
-		//val.clear();
-//		values.clear();
+	cout<<word_count<<endl;
+	cout<<"th = "<<threshold<<endl;
+	
+	string filenames[5];
+	filenames[0] = "data_1";
+	filenames[1] = "data_2";
+	filenames[2] = "data_3";
+	filenames[3] = "data_4";
+	filenames[4] = "data_5";			
+
+	for(int i=0;i<4;i++)
+	{
+		FILE* fp;						
+		fp = fopen(filenames[i].c_str(), "r");
+		build_dictionary(fp);
+		fclose(fp);				
 	}
-	//cout<<"made truth table"<<endl;
-	int int_error = 0;
+		
+	for(int i=0;i<4;i++)
+	{
+		FILE* fp;						
+		fp = fopen(filenames[i].c_str(), "r");
+		train_using_file(fp,table,out_final,answers);
+		fclose(fp);				
+	}
+	cout<<"data input done"<<endl;
+
 	for(int itrcount=0;;itrcount++)
 	{
 		float total_error = 0;
 		for(int i=0;i<table.size();i++)
 		{
-			if(debug)
-			cout<<answers[i]<<" ";
+			//if(debug)
+			//cout<<answers[i]<<" ";
 			net.train(table[i],out_final[i]);
 			total_error +=net.error;
-
 		}
 		cout<<itrcount<<" "<<total_error<<endl;
 		//cout<<total_error<<endl;
 		if(total_error < threshold)
 		{
-			//cout<<	"stopped after "<<k << " iterations with total error "<<total_error<<endl;
-			
+			//cout<<	"stopped after "<<k << " iterations with total error "<<total_error<<endl;	
 			debug = 1;
 			break;
 		}
-		if(itrcount>500000)
+		if(itrcount>100000)
 		{
 			for(int i =0;i<net.noLayers;i++)
 				for(int j=0;j<net.mat[i].noNeuron;j++)
@@ -307,17 +505,18 @@ int main(int argc, char* argv[])
 			itrcount = 0;
 		}
 	}
-	for(int i=0;i<table.size();i++)
-	{
-		//if(debug)
-		//cout<<answers[i]<<" ";
-		net.train(table[i],out_final[i]);
-		int_error += output_try!=answers[i];
-	}
+	
+	FILE* fp = fopen(filenames[4].c_str(), "r");
+	test_using_file(fp,net);
+	fclose(fp);
+
+
+	ofstream outfile("weights_6");
 	for(int i =0;i<net.noLayers;i++)
 			for(int j=0;j<net.mat[i].noNeuron;j++)
 				for(int k=0;k<net.mat[i].v[j].weightSize;k++)
-					cout<<" layer "<<i<<" neuron "<<j<<" weight "<<k<<" is "<<net.mat[i].v[j].weights[k]<<endl;;
-	cout<<int_error<<endl;
+					outfile<<" layer "<<i<<" neuron "<<j<<" weight "<<k<<" is "<<net.mat[i].v[j].weights[k]<<endl;
+	outfile.close();
+	
 	return 0;	
 }
